@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <title>PolySat Parts Database</title>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+    </head>
+    <body>
+        <div id="partsTree">
+            <ul>
+                <table-name v-for="(tableData, tableName) in tables" v-bind:key="tableName" v-bind:table="tableName" v-bind:data="tableData">
+                    <p>Hello</p>
+                </table-name>
+            </ul>
+        </div>
+    </body>
+    <script src="app.js"></script>
+    <script src="components/partsTree.js"></script>
+</html>
+
