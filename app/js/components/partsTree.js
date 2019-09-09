@@ -12,7 +12,8 @@ var partsTreeComponent = {
 
             if (partsTree.tables[tableName].parts.length == 0) {
                 jQuery.getJSON(`${window.location.origin}/tables?name=${tableName}`, data => {
-                    partsTree.tables[tableName].parts = data;
+                    partsTree.tables[tableName].parts = data.parts;
+                    console.log(data.schema);
                 });
             }
         },
@@ -41,6 +42,7 @@ jQuery.getJSON(window.location.origin + "/tables", data => {
         dbTables[name] = {
             "name": name,
             "parts": [],
+            "schema": [],
             "selected": false
         };
     }

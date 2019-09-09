@@ -1,13 +1,8 @@
 "use strict";
 
-const database = require('./database.js');
 
-const express = require('express');
-const app = express();
-const port = 8000;
-
-
-let db = new database('./login.json');
+const database = require('./server/databaseAPI.js');
+let db = new database('./server/login.json');
 let tableNames = [];
 db.eventEmitter.on('ready', function (e) {
     db.getTables().then(res => tableNames = res);
@@ -15,14 +10,23 @@ db.eventEmitter.on('ready', function (e) {
 db.connect();
 
 
-app.get('/', (req, res) => res.sendFile(__dirname + '/index.html'));
+const express = require('express');
+const app = express();
+const port = 8000;
+app.use('/static', express.static('app/public'));
+app.use('/js', express.static('app/js'));
+app.get('/', (req, res) => res.sendFile(__dirname + '/app/index.html'));
 app.get('/tables', (req, res) => {
-    if (Object.keys(req.query).length === 0 && req.query.constructor === Object) {  // Check req.query is empty
-        res.send(tableNames);
+    if (Object.keys(req.query).length === 0 && req.query.constructor === Object) {
+        res.send(tableNames);   // req.query is empty
     } else {
-        db.getTableData(req.query.name).then(result => res.send(result));
+        Promise.all([db.getTableData(req.query.name), db.getTableSchema(req.query.name)]).then((results) => {
+            console.log(results);
+            res.send({
+                "parts": results[0],
+                "schema": results[1]
+            });
+        });
     }
 });
-app.use('/static', express.static('public'));
-app.use('/components', express.static('components'));
 app.listen(port, () => console.log(`Listening on port ${port}!`))

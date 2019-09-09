@@ -68,6 +68,9 @@ class Database {
         return this.enqueue(`SELECT * FROM ${this.credentials.database}.${tableName}`, (result) => {return result});
     }
 
+    getTableSchema(tableName) {
+        return this.enqueue(`SHOW FULL COLUMNS FROM ${this.credentials.database}.${tableName}`, (result) => {return result});
+    }
 
 }
 
