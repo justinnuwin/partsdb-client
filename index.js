@@ -16,7 +16,6 @@ db.connect();
 
 
 app.get('/', (req, res) => res.sendFile(__dirname + '/index.html'));
-app.get('/app.js', (req, res) => res.sendFile(__dirname + '/app.js'));
 app.get('/tables', (req, res) => {
     if (Object.keys(req.query).length === 0 && req.query.constructor === Object) {  // Check req.query is empty
         res.send(tableNames);
@@ -24,5 +23,6 @@ app.get('/tables', (req, res) => {
         db.getTableData(req.query.name).then(result => res.send(result));
     }
 });
+app.use('/static', express.static('public'));
 app.use('/components', express.static('components'));
 app.listen(port, () => console.log(`Listening on port ${port}!`))

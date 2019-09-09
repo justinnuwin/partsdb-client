@@ -15,6 +15,9 @@ var partsTreeComponent = {
                     partsTree.tables[tableName].parts = data;
                 });
             }
+        },
+        setFormPart: function (partObj) {
+            partForm.part = partObj;
         }
     },
     template: `
@@ -22,7 +25,10 @@ var partsTreeComponent = {
             <a v-bind:href="'#' + table">{{ table }}</a>
             <ul v-show="data.selected">
                 <li v-for="part in data.parts">
-                    <a v-bind:href="'#' + table + '/' + part['Part Number']">{{ part['Part Number'] }}</a>
+                    <a v-bind:href="'#' + table + '/' + part['Part Number']"
+                       v-on:click="setFormPart(part)">
+                            {{ part['Part Number'] }}
+                    </a>
                 </li>
             </ul>
         </li>`

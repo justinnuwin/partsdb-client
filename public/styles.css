@@ -1,0 +1,17 @@
+body {
+    display: flex;
+    height: 100vh;
+}
+
+#partsTree {
+    width: 33vw;
+    box-sizing: border-box;
+    overflow: scroll;
+}
+
+#partForm {
+    width: 66vw;
+    box-sizing: border-box;
+    overflow: scroll;
+    padding: 0 5%;
+}
