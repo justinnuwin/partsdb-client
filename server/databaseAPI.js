@@ -79,12 +79,13 @@ class Database {
 
     updatePart(tableName, originalPartNumber, part) {
         let setString = "";
+        // TODO: Add method to escape \' from all dynamic values
         for (let property in part)
-            setString += `'${property}'='${part[property]}',`;
+            setString += `\`${property}\`='${part[property]}',`;
         setString = setString.slice(0, -1);
-        console.log(`UPDATE ${tableName}
+        console.log(`UPDATE ${this.credentials.database}.${tableName}
                      SET ${setString}
-                     WHERE 'Part Number'='${originalPartNumber}'`
+                     WHERE \`Part Number\`='${originalPartNumber}'`
         );
     }
 }
