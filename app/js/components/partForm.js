@@ -5,6 +5,7 @@ var partFormComponent = {
         resetChanges: function () {
             jQuery("#submitMessage").remove();
             partForm.resetChanges();
+            jQuery("label").css("font-weight", "normal");
         },
         validateForm: function (e) {
             e.preventDefault();
@@ -42,6 +43,12 @@ var partFormComponent = {
                     } 
                 });
             }
+        },
+        formChangedHandler: function (property) {
+            if (partForm.part[property] != partForm.serverStatePart[property]) 
+                jQuery(`label[for='${property}']`).css("font-weight", "bold");
+            else
+                jQuery(`label[for='${property}']`).css("font-weight", "normal");
         }
     },
     template: `
@@ -59,16 +66,19 @@ var partFormComponent = {
                 <input v-bind:id="propKey"
                        v-if="schema[propKey].parsedType == 'string'"
                        v-model.trim="data[propKey]"
+                       v-on:change="formChangedHandler(propKey)"
                        v-bind:required="!schema.nullAllowed">
                 <a v-if="propKey == 'Link'" v-bind:href="data[propKey]">Go to link</a>
                 <input v-bind:id="propKey"
                        v-else-if="schema[propKey].parsedType == 'number'"
                        v-model.number="data[propKey]"
                        v-bind:required="!schema.nullAllowed"
+                       v-on:change="formChangedHandler(propKey)"
                        type="number" step="0.000001">
                 <select v-bind:id="propKey"
                         v-else-if="schema[propKey].parsedType == 'enum'"
                         v-model="data[propKey]"
+                       v-on:change="formChangedHandler(propKey)"
                         v-bind:required="!schema.nullAllowed">
                     <option disabled value="">Please select one</option>
                     <option v-for="value in schema[propKey].enums">{{ value }}</option>
