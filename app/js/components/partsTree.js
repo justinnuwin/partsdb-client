@@ -2,7 +2,6 @@ var partsTreeComponent = {
     props: ['table', 'data'],
     methods: {
         loadParts: function (tableName) {
-            // TODO: Check if there are existing changes in the partForm and prompt to discard changes
             for (_tableName in partsTree.tables) {
                 if (_tableName != tableName)
                     partsTree.tables[_tableName].selected = false;
@@ -18,6 +17,12 @@ var partsTreeComponent = {
             }
         },
         setFormPart: function (partObj, tableName) {
+            if (partForm.isFormChanged()) {
+                if (confirm("Changes have been made. Reset changes?"))
+                    partForm.resetChanges();
+                else
+                    return;
+            }
             partForm.part = partObj;
             partForm.serverStatePart = jQuery.extend(true, { }, partObj);     // Deep Clone
             partForm.schema = partsTree.tables[tableName].schema;

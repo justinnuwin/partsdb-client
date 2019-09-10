@@ -25,3 +25,7 @@ a:hover {
     overflow: scroll;
     padding: 0 5%;
 }
+
+.formField {
+    margin: 1em 0;
+}

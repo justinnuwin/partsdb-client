@@ -1,25 +1,16 @@
-function isFormChanged() {
-    for (key in partForm.part) {
-        if (partForm.part[key] != partForm.serverStatePart[key])
-            return true;
-    }
-    return false;
-}
 
 var partFormComponent = {
     props: ['data', 'schema', 'errors'],
     methods: {
         resetChanges: function () {
             jQuery("#submitMessage").remove();
-            for (property in partForm.part) {
-                partForm.part[property] = partForm.serverStatePart[property];
-            }
+            partForm.resetChanges();
         },
         validateForm: function (e) {
             e.preventDefault();
             jQuery("#submitMessage").remove();
             partForm.errors = [];
-            if (!isFormChanged()) {
+            if (!partForm.isFormChanged()) {
                 jQuery("#partForm > form").append("<p id='submitMessage'>No changes made</p>");
                 return;
             }
@@ -63,12 +54,13 @@ var partFormComponent = {
                     <p v-else>{{ error.property }} has an unkown error. Contact developer.</p>
                 </li>
             </ul>
-            <div v-for="(propValue, propKey) in data" v-bind:key="propKey">
+            <div v-for="(propValue, propKey) in data" v-bind:key="propKey" class="formField">
                 <label v-bind:for="propKey">{{ propKey }}</label>
                 <input v-bind:id="propKey"
                        v-if="schema[propKey].parsedType == 'string'"
                        v-model.trim="data[propKey]"
                        v-bind:required="!schema.nullAllowed">
+                <a v-if="propKey == 'Link'" v-bind:href="data[propKey]">Go to link</a>
                 <input v-bind:id="propKey"
                        v-else-if="schema[propKey].parsedType == 'number'"
                        v-model.number="data[propKey]"
@@ -96,7 +88,20 @@ var partForm = new Vue({
         part: {},
         serverStatePart: {},
         schema: {},
-        errors: [],
+        errors: []
+    },
+    methods: {
+        isFormChanged: function () {
+            for (key in partForm.part) {
+                if (partForm.part[key] != partForm.serverStatePart[key])
+                    return true;
+            }
+            return false;
+        }, 
+        resetChanges: function () {
+            for (property in partForm.part) {
+                partForm.part[property] = partForm.serverStatePart[property];
+            }
+        }
     }
 });
-
