@@ -32,7 +32,11 @@ var partFormComponent = {
                 jQuery.ajax({
                     url: "/parts",
                     type: "post",
-                    data: partForm.part,
+                    data: {
+                        "tableName": partForm.tableName,
+                        "originalPartNumber": partForm.serverStatePart["Part Number"],
+                        "part": partForm.part
+                    },
                     success: function (message) {
                         jQuery("#submitMessage").remove();
                         jQuery("#partForm > form").append(`<p id='submitMessage'>${message}</p>`);
@@ -95,6 +99,7 @@ var partForm = new Vue({
         'part-form': partFormComponent
     },
     data: {
+        tableName: "",
         part: {},
         serverStatePart: {},
         schema: {},

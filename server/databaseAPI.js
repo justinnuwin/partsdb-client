@@ -30,6 +30,10 @@ class Database {
         });
         this.eventEmitter.on('enqueue', this.checkQueue.bind(this));
         this.eventEmitter.emit('ready');
+
+
+
+        this.enqueue(`SELECT * FROM ${this.credentials.database}.${tableName}`, (result) => {return result});
     }
 
     checkQueue() {
@@ -73,6 +77,16 @@ class Database {
         return this.enqueue(`SHOW FULL COLUMNS FROM ${this.credentials.database}.${tableName}`, (result) => {return result});
     }
 
+    updatePart(tableName, originalPartNumber, part) {
+        let setString = "";
+        for (let property in part)
+            setString += `'${property}'='${part[property]}',`;
+        setString = setString.slice(0, -1);
+        console.log(`UPDATE ${tableName}
+                     SET ${setString}
+                     WHERE 'Part Number'='${originalPartNumber}'`
+        );
+    }
 }
 
 module.exports = Database;

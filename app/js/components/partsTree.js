@@ -23,6 +23,7 @@ var partsTreeComponent = {
                 else
                     return;
             }
+            partForm.tableName = tableName;
             partForm.part = partObj;
             partForm.serverStatePart = jQuery.extend(true, { }, partObj);     // Deep Clone
             partForm.schema = partsTree.tables[tableName].schema;

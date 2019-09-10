@@ -32,6 +32,7 @@ app.get('/tables', (req, res) => {
 });
 app.post('/parts', (req, res) => {
     console.log(req.body);
+    db.updatePart(req.body.tableName, req.body.originalPartNumber, req.body.part);
     res.send("Success!");
 });
 app.listen(port, () => console.log(`Listening on port ${port}!`))
