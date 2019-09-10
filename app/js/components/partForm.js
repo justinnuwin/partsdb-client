@@ -1,15 +1,68 @@
+function isFormChanged() {
+    for (key in partForm.part) {
+        if (partForm.part[key] != partForm.serverStatePart[key])
+            return true;
+    }
+    return false;
+}
+
 var partFormComponent = {
-    props: ['data', 'schema'],
+    props: ['data', 'schema', 'errors'],
     methods: {
         resetChanges: function () {
+            jQuery("#submitMessage").remove();
             for (property in partForm.part) {
                 partForm.part[property] = partForm.serverStatePart[property];
             }
+        },
+        validateForm: function (e) {
+            e.preventDefault();
+            jQuery("#submitMessage").remove();
+            partForm.errors = [];
+            if (!isFormChanged()) {
+                jQuery("#partForm > form").append("<p id='submitMessage'>No changes made</p>");
+                return;
+            }
+            formValid = true;
+            for (key in partForm.part) {
+                valid = validateField(key, partForm.part[key], partForm.schema);
+                if (!valid) {
+                    partForm.errors.push({
+                        "property": key,
+                        "type": partForm.schema[key].parsedType,
+                        "fieldLength": partForm.schema[key].fieldLength
+                    });
+                }
+                formValid &= valid;
+            }
+            if (formValid) {
+                jQuery("#partForm > form").append("<p id='submitMessage'>Submitting. This may take a moment...</p>");
+                jQuery.ajax({
+                    url: "/parts",
+                    type: "post",
+                    data: partForm.part,
+                    success: function (message) {
+                        jQuery("#submitMessage").remove();
+                        jQuery("#partForm > form").append(`<p id='submitMessage'>${message}</p>`);
+                    },
+                    error: function (xhr, status, message) {
+                        jQuery("#submitMessage").remove();
+                        jQuery("#partForm > form").append(`<p id='submitMessage'>ajax error in validateForm: ${status}: ${message}</p>`);
+                    } 
+                });
+            }
         }
     },
-    // TODO: Get submit working
     template: `
-        <form action="/parts" method="post">
+        <form v-on:submit="validateForm">
+            <ul id="messages">
+                <li v-for="error in errors">
+                    <p v-if="error.type == 'string'">{{ error.property }} must be less than {{ error.fieldLength }} characters and only contain ASCII values.</p>
+                    <p v-else-if="error.type == 'number'">{{ error.property }} must be a number.</p>
+                    <p v-else-if="error.type == 'enum'">{{ error.property }} must be selected from the dropdown.</p>
+                    <p v-else>{{ error.property }} has an unkown error. Contact developer.</p>
+                </li>
+            </ul>
             <div v-for="(propValue, propKey) in data" v-bind:key="propKey">
                 <label v-bind:for="propKey">{{ propKey }}</label>
                 <input v-bind:id="propKey"
@@ -20,7 +73,7 @@ var partFormComponent = {
                        v-else-if="schema[propKey].parsedType == 'number'"
                        v-model.number="data[propKey]"
                        v-bind:required="!schema.nullAllowed"
-                       type="number" step="0.01">
+                       type="number" step="0.000001">
                 <select v-bind:id="propKey"
                         v-else-if="schema[propKey].parsedType == 'enum'"
                         v-model="data[propKey]"
@@ -42,9 +95,8 @@ var partForm = new Vue({
     data: {
         part: {},
         serverStatePart: {},
-        schema: []
+        schema: {},
+        errors: [],
     }
 });
-
-
 

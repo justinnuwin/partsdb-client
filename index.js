@@ -13,6 +13,8 @@ db.connect();
 const express = require('express');
 const app = express();
 const port = 8000;
+app.use(express.json());        // for parsing application/json
+app.use(express.urlencoded({ extended: true }));    // for parsing application/x-www-form-urlencoded
 app.use('/static', express.static('app/public'));
 app.use('/js', express.static('app/js'));
 app.get('/', (req, res) => res.sendFile(__dirname + '/app/index.html'));
@@ -28,5 +30,8 @@ app.get('/tables', (req, res) => {
         });
     }
 });
-app.post('/parts', (req, res) => {});
+app.post('/parts', (req, res) => {
+    console.log(req.body);
+    res.send("Success!");
+});
 app.listen(port, () => console.log(`Listening on port ${port}!`))

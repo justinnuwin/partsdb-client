@@ -31,13 +31,17 @@ function parseTableSchema(schema) {
     return schemaObj;
 }
 
-function validateField(name, value, schema) {
-    if (schema[name].parsedType == "enum") 
-        return schema[name].enums.indexOf(value) > -1 ? true : false;
-    else if (schema[name].parsedType == "string")
-        return value.length <= schema[name].fieldLength;
-    else if (schema[name].parsedType == "number")
-        return isNaN(Number(value));
+function isASCII(str) {
+    return /^[\x00-\x7F]*$/.test(str);
+}
+
+function validateField(property, value, schema) {
+    if (schema[property].parsedType == "enum") 
+        return isASCII(value) && schema[property].enums.indexOf(value) > -1 ? true : false;
+    else if (schema[property].parsedType == "string")
+        return isASCII(value) && value.length <= schema[property].fieldLength;
+    else if (schema[property].parsedType == "number")
+        return !isNaN(Number(value));
     else 
         return false;
 }
