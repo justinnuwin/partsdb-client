@@ -26,7 +26,7 @@ class Database {
              host: this.credentials.hostname,
              user: this.credentials.username,
              password: this.credentials.password,
-             connectionLimit: 5     // TODO: Check this?
+             connectionLimit: 5
         });
         this.eventEmitter.on('enqueue', this.checkQueue.bind(this));
         this.eventEmitter.emit('ready');
@@ -39,6 +39,7 @@ class Database {
                 conn.query(qObj.queryString).then(res => {
                     qObj.deferred.resolve(qObj.postprocessing(res));
                 });
+                conn.end();
             });
         }
     }

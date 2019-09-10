@@ -3,6 +3,16 @@ body {
     height: 100vh;
 }
 
+a {
+    color: blue;
+    text-decoration: underline;
+}
+
+a:hover {
+    color: magenta;
+    text-decoration: underline;
+}
+
 #partsTree {
     width: 33vw;
     box-sizing: border-box;

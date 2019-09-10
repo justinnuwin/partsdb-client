@@ -21,7 +21,6 @@ app.get('/tables', (req, res) => {
         res.send(tableNames);   // req.query is empty
     } else {
         Promise.all([db.getTableData(req.query.name), db.getTableSchema(req.query.name)]).then((results) => {
-            console.log(results);
             res.send({
                 "parts": results[0],
                 "schema": results[1]
@@ -29,4 +28,5 @@ app.get('/tables', (req, res) => {
         });
     }
 });
+app.post('/parts', (req, res) => {});
 app.listen(port, () => console.log(`Listening on port ${port}!`))

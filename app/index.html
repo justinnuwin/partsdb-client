@@ -14,10 +14,11 @@
         </div>
         <div id="partForm">
             <h2>Part Information</h2>
-            <part-form v-bind:data="part"></part-form>
+            <part-form v-bind:data="part" v-bind:schema="schema"></part-form>
         </div>
     </body>
+    <script src="js/dbSchema.js"></script>
     <script src="js/components/partsTree.js"></script>
-    <script src="js/components/partsForm.js"></script>
+    <script src="js/components/partForm.js"></script>
 </html>
 

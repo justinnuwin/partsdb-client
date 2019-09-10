@@ -1,0 +1,95 @@
+Capacitor
+Part Number varchar(50) NO 
+Type enum('Ceramic','Tantalum','SuperCap','Thin Film','DNP') NO 
+Value tinytext NO 
+Description text NO 
+Component Height mm float NO 
+Voltage V float NO 
+Tolerance tinytext NO 
+Schematic Part tinytext NO 
+Layout PCB Footprint tinytext NO 
+Manufacturer Part Number tinytext NO 
+Manufacturer tinytext NO 
+Distributor Part Number tinytext NO 
+Distributor tinytext NO 
+Price float NO 
+Stock enum('In Stock','Out of stock','Not for new designs','Discontinued','Obsolete','DNP','Unknown') NO 
+Link text NO
+
+
+IC
+Part Number varchar(50) NO 
+Type enum('ADC','Battery Protection','BJT','Buffer','Comparator','Controller','Converter','Current source/sink','DAC','DigiPOT','Digital Potentiometer','Filter','FPGA','GPIO Expander','GPS','H-Bdridge','Isolator','Level Shifter','LNA','Logic','Memory','Microcontroller','Mosfet H-Bridge','MOSFET Inverters','Mosfets','Multiplexers','Op Amp','Oscillators','Processor','Regulators','Relay','RF Amp','RF Power Detector','RF Splitter/Combiner','RTC','Sensor','Switch','Transceiver','Transmitter','Trimmable Capacitor','USB Hub','Varistor','Watchdog') NO 
+Value tinytext NO 
+Description text NO 
+Component Height mm float YES 
+Schematic Part tinytext NO 
+Layout PCB Footprint tinytext NO 
+Manufacturer Part Number tinytext NO 
+Manufacturer tinytext NO 
+Distributor Part Number tinytext NO 
+Distributor tinytext YES 
+Price float YES 
+Stock enum('In Stock','Not for new designs','Discontinued','Obsolete','DNP','Samples') YES 
+Link text YES
+
+
+Inductor
+Part Number varchar(50) NO 
+Type enum('Balun','Choke','EMI Filter','Ferrite Bead','Multilayer','Shielded','Wire Wound','DNP') NO 
+Value tinytext NO 
+Description text NO 
+Component Height mm float YES 
+Saturation Current tinytext YES 
+SRF tinytext YES 
+Tolerance tinytext YES 
+Q tinytext YES 
+DC Resistance tinytext YES 
+Schematic Part tinytext NO 
+Layout PCB Footprint tinytext NO 
+Manufacturer Part Number tinytext NO 
+Manufacturer tinytext NO 
+Distributor Part Number tinytext NO 
+Distributor tinytext NO 
+Price float YES 
+Stock enum('In Stock','Out of stock','Not for new designs','Discontinued','Obsolete','DNP','Unknown') NO 
+Link text NO 
+
+
+Misc
+Part Number varchar(50) NO 
+Type enum('Antenna','Balun','Battery','Board','Camera','Configuration','Connector','Crystals','Diode','Filter','Fuse Clip','Fuses','GPS','Jack(banana)','LED','Mounting','Pad','Photo-diode','Resonator','RF Jack','RF Pwr Divider','RF Shield','RF Test Point','Sensor','Solar Angle Sensor Board','Solar Cell','Switches','Test Pad','WiFi') NO 
+Value tinytext YES 
+Description text YES 
+Component Height mm float YES 
+Rating tinytext YES 
+Tolerance tinytext YES 
+Schematic Part tinytext NO 
+Layout PCB Footprint tinytext NO 
+Manufacturer Part Number tinytext YES 
+Manufacturer tinytext YES 
+Distributor Part Number tinytext YES 
+Distributor tinytext YES 
+Price float YES 
+Stock enum('In Stock','Not for new designs','Discontinued','Obsolete','DNP','Samples') YES 
+Link text YES 
+
+
+Resistor
+Part Number varchar(50) NO 
+Type enum('Attenuator','Current Sense','Metal Film','Potentiometer','Thick Film','Thick Film Array','Thin Film','DNP') NO 
+Value tinytext NO 
+Description text NO 
+Component Height mm float YES 
+Power W float YES 
+Tolerance tinytext NO 
+Schematic Part tinytext NO 
+Layout PCB Footprint tinytext NO 
+Manufacturer Part Number tinytext NO 
+Manufacturer tinytext NO 
+Distributor Part Number tinytext NO 
+Distributor tinytext NO 
+Price float NO 
+Stock enum('In Stock','Out of stock','Not for new designs','Discontinued','Obsolete','DNP','Unknown') NO 
+Link text NO 
+
