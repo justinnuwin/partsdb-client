@@ -1,18 +1,17 @@
-
 var partFormComponent = {
     props: ['data', 'schema', 'errors'],
     methods: {
         resetChanges: function () {
-            jQuery("#submitMessage").remove();
+            $("#submitMessage").remove();
             partForm.resetChanges();
-            jQuery("label").css("font-weight", "normal");
+            $("label").css("font-weight", "normal");
         },
         validateForm: function (e) {
             e.preventDefault();
-            jQuery("#submitMessage").remove();
+            $("#submitMessage").remove();
             partForm.errors = [];
             if (!partForm.isFormChanged()) {
-                jQuery("#partForm > form").append("<p id='submitMessage'>No changes made</p>");
+                $("#partForm > form").append("<p id='submitMessage'>No changes made</p>");
                 return;
             }
             formValid = true;
@@ -28,8 +27,8 @@ var partFormComponent = {
                 formValid &= valid;
             }
             if (formValid) {
-                jQuery("#partForm > form").append("<p id='submitMessage'>Submitting. This may take a moment...</p>");
-                jQuery.ajax({
+                $("#partForm > form").append("<p id='submitMessage'>Submitting. This may take a moment...</p>");
+                $.ajax({
                     url: "/parts",
                     type: "post",
                     data: {
@@ -38,21 +37,21 @@ var partFormComponent = {
                         "part": partForm.part
                     },
                     success: function (message) {
-                        jQuery("#submitMessage").remove();
-                        jQuery("#partForm > form").append(`<p id='submitMessage'>${message}</p>`);
+                        $("#submitMessage").remove();
+                        $("#partForm > form").append(`<p id='submitMessage'>${message}</p>`);
                     },
                     error: function (xhr, status, message) {
-                        jQuery("#submitMessage").remove();
-                        jQuery("#partForm > form").append(`<p id='submitMessage'>ajax error in validateForm: ${status}: ${message}</p>`);
+                        $("#submitMessage").remove();
+                        $("#partForm > form").append(`<p id='submitMessage'>ajax error in validateForm: ${status}: ${message}</p>`);
                     } 
                 });
             }
         },
         formChangedHandler: function (property) {
             if (partForm.part[property] != partForm.serverStatePart[property]) 
-                jQuery(`label[for='${property}']`).css("font-weight", "bold");
+                $(`label[for='${property}']`).css("font-weight", "bold");
             else
-                jQuery(`label[for='${property}']`).css("font-weight", "normal");
+                $(`label[for='${property}']`).css("font-weight", "normal");
         }
     },
     template: `
@@ -91,7 +90,7 @@ var partFormComponent = {
             <button v-on:click="resetChanges()" type="button">Reset Changes</button>
             <button type="submit">Submit</button>
         </form>`
-};
+}
 
 var partForm = new Vue({
     el: '#partForm',

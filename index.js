@@ -1,38 +1,19 @@
 "use strict";
 
+const server = require('./server/server.js');
 
-const database = require('./server/databaseAPI.js');
-let db = new database('./server/login.json');
-let tableNames = [];
-db.eventEmitter.on('ready', function (e) {
-    db.getTables().then(res => tableNames = res);
-});
-db.connect();
+const electron = require("electron");
+let app = electron.app;
+let BrowserWindow = electron.BrowserWindow;
 
-
-const express = require('express');
-const app = express();
-const port = 8000;
-app.use(express.json());        // for parsing application/json
-app.use(express.urlencoded({ extended: true }));    // for parsing application/x-www-form-urlencoded
-app.use('/static', express.static('app/public'));
-app.use('/js', express.static('app/js'));
-app.get('/', (req, res) => res.sendFile(__dirname + '/app/index.html'));
-app.get('/tables', (req, res) => {
-    if (Object.keys(req.query).length === 0 && req.query.constructor === Object) {
-        res.send(tableNames);   // req.query is empty
-    } else {
-        Promise.all([db.getTableData(req.query.name), db.getTableSchema(req.query.name)]).then((results) => {
-            res.send({
-                "parts": results[0],
-                "schema": results[1]
-            });
-        });
-    }
+app.on('ready', function () {
+    let webserver = new server();
+    let win = new BrowserWindow({
+        width: 800,
+        height: 600,
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    win.loadURL("http://localhost:8000");
 });
-app.post('/parts', (req, res) => {
-    console.log(req.body);
-    db.updatePart(req.body.tableName, req.body.originalPartNumber, req.body.part);
-    res.send("Success!");
-});
-app.listen(port, () => console.log(`Listening on port ${port}!`))

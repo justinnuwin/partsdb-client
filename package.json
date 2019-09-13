@@ -5,11 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "electron .",
+    "webserver": "node server/server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "electron": "^6.0.9",
     "express": "^4.17.1",
     "mariadb": "^2.1.0",
     "passport": "^0.4.0"

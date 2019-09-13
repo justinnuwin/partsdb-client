@@ -30,10 +30,6 @@ class Database {
         });
         this.eventEmitter.on('enqueue', this.checkQueue.bind(this));
         this.eventEmitter.emit('ready');
-
-
-
-        this.enqueue(`SELECT * FROM ${this.credentials.database}.${tableName}`, (result) => {return result});
     }
 
     checkQueue() {

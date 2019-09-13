@@ -43,7 +43,7 @@ var partsTreeComponent = {
 };
 
 var partsTree;
-jQuery.getJSON(window.location.origin + "/tables", data => {
+$.getJSON(window.location.origin + "/tables", data => {
     let dbTables = {};
     for (name of data) {
         dbTables[name] = {
