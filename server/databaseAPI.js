@@ -28,8 +28,17 @@ class Database {
              password: this.credentials.password,
              connectionLimit: 5
         });
-        this.eventEmitter.on('enqueue', this.checkQueue.bind(this));
-        this.eventEmitter.emit('ready');
+
+        this.pool.getConnection().then(conn => {
+            conn.query('SELECT CURRENT_USER').then(res => {
+                console.log(`Logged in as ${res[0].CURRENT_USER}`);
+                conn.release();
+                this.eventEmitter.on('enqueue', this.checkQueue.bind(this));
+                this.eventEmitter.emit('ready');
+            });
+        }).catch(err => {
+                console.log(`Issue connecting: ${err}`);
+        });
     }
 
     checkQueue() {
@@ -38,8 +47,10 @@ class Database {
                 let qObj = this.queue.shift();
                 conn.query(qObj.queryString).then(res => {
                     qObj.deferred.resolve(qObj.postprocessing(res));
+                }).catch(err => {
+                    console.log(`Issue connecting: ${err}`);
                 });
-                conn.end();
+                conn.release();
             });
         }
     }
@@ -56,7 +67,7 @@ class Database {
     }
 
     getTables() {
-        return this.enqueue(`SHOW TABLES FROM ${this.credentials.database}`, (result) => {
+        return this.enqueue(`SHOW TABLES FROM ${this.credentials.database}`, result => {
             let tables = [];
             for (let o of result) {
                 tables.push(Object.values(o)[0]);

@@ -12,8 +12,10 @@ class Server {
         this.eventEmitter = new events.EventEmitter();
         this.db = new database(path.join(__dirname, 'login.json'));
         this.db.eventEmitter.on('ready', (e) => {
+            console.log("Databse connected!");
             this.db.getTables().then(res => {
                 tableNames = res
+                console.log("Database tables loaded: ", tableNames);
                 this.eventEmitter.emit('ready');
             });
         });
@@ -26,8 +28,8 @@ class Server {
         this.app.use('/js', express.static(path.join(appPath, 'js')));
         this.app.get('/', (req, res) => res.sendFile(path.join(appPath, 'index.html')));
         this.app.get('/tables', (req, res) => {
-            if (Object.keys(req.query).length === 0 && req.query.constructor === Object) {
-                res.send(tableNames);   // req.query is empty
+            if (Object.keys(req.query).length === 0 && req.query.constructor === Object) {      // req.query is empty
+                res.send(tableNames);   
             } else {
                 Promise.all([this.db.getTableData(req.query.name), this.db.getTableSchema(req.query.name)]).then(results => {
                     res.send({
