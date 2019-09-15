@@ -15,5 +15,6 @@ app.on('ready', function () {
             nodeIntegration: true
         }
     });
+    win.setMenuBarVisibility(false)
     win.loadURL("http://localhost:8000");
 });
