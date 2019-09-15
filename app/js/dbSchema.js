@@ -1,5 +1,5 @@
 function parseTableSchema(schema) {
-    schemaObj = {};
+    let schemaObj = {};
     for (column of schema) {
         schemaObj[column.Field] = column;
         if (column.Null === "YES")
@@ -30,6 +30,16 @@ function parseTableSchema(schema) {
     }
     return schemaObj;
 }
+
+function buildEmptyPart(schema) {
+    let emptyPart = {};
+    for (column in schema){
+        emptyPart[column] = "";
+    }
+    emptyPart['Part Number'] = "Add new part..";
+    return emptyPart;
+}
+
 
 function isASCII(str) {
     return /^[\x00-\x7F]*$/.test(str);

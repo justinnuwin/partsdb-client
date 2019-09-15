@@ -39,6 +39,8 @@ var partFormComponent = {
                     success: function (message) {
                         $("#submitMessage").remove();
                         $("#partForm > form").append(`<p id='submitMessage'>${message}</p>`);
+                        partForm.serverStatePart = $.extend(true, { }, partForm.part);
+                        $("label").css("font-weight", "normal");
                     },
                     error: function (xhr, status, message) {
                         $("#submitMessage").remove();

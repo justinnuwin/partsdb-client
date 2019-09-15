@@ -57,32 +57,40 @@ class Database {
 
     getTables() {
         return this.enqueue(`SHOW TABLES FROM ${this.credentials.database}`, (result) => {
-            let array = [];
+            let tables = [];
             for (let o of result) {
-                array.push(Object.values(o)[0]);
+                tables.push(Object.values(o)[0]);
             }
-            return array;
+            return tables;
         });
     }
     
+    //TODO: It would be wise to implement some prepared statements or procedures
     getTableData(tableName) {
-        return this.enqueue(`SELECT * FROM ${this.credentials.database}.${tableName}`, (result) => {return result});
+        return this.enqueue(`SELECT * FROM ${this.credentials.database}.${tableName}`, result => {return result});
     }
 
     getTableSchema(tableName) {
-        return this.enqueue(`SHOW FULL COLUMNS FROM ${this.credentials.database}.${tableName}`, (result) => {return result});
+        return this.enqueue(`SHOW FULL COLUMNS FROM ${this.credentials.database}.${tableName}`, result => {return result});
     }
 
     updatePart(tableName, originalPartNumber, part) {
         let setString = "";
         // TODO: Add method to escape \' from all dynamic values
-        for (let property in part)
-            setString += `\`${property}\`='${part[property]}',`;
+        for (let property in part) {
+            let dirtyProperty = part[property];
+            let cleanProperty;
+            if (dirtyProperty.indexOf("'") > -1)
+                cleanProperty = dirtyProperty.replace("\'", "\'\'");
+            else
+                cleanProperty = dirtyProperty;
+            setString += `\`${property}\`='${cleanProperty}',`;
+        }
         setString = setString.slice(0, -1);
-        console.log(`UPDATE ${this.credentials.database}.${tableName}
-                     SET ${setString}
-                     WHERE \`Part Number\`='${originalPartNumber}'`
-        );
+        return this.enqueue(`UPDATE ${this.credentials.database}.${tableName}
+                             SET ${setString}
+                             WHERE \`Part Number\`='${originalPartNumber}'`,
+                            result => {return result});
     }
 }
 
