@@ -40,7 +40,10 @@ class Server {
             }
         });
         this.app.post('/parts', (req, res) => {
-            this.db.updatePart(req.body.tableName, req.body.originalPartNumber, req.body.part);
+            if (req.body.newPart == 'true')
+                this.db.insertPart(req.body.tableName, req.body.part);
+            else
+                this.db.updatePart(req.body.tableName, req.body.originalPartNumber, req.body.part);
             res.send("Success!");
         });
         this.app.listen(port, () => console.log(`Listening on port ${port}!`));

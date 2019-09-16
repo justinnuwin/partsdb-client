@@ -10,14 +10,10 @@ var partsTreeComponent = {
             }
 
             if (partsTree.tables[tableName].parts.length === 0) {
-                jQuery.getJSON(`${window.location.origin}/tables?name=${tableName}`, data => {
-                    partsTree.tables[tableName].parts = data.parts;
-                    partsTree.tables[tableName].schema = parseTableSchema(data.schema);
-                    partsTree.tables[tableName].parts.unshift(buildEmptyPart(partsTree.tables[tableName].schema));
-                });
+                partsTree.reloadTable(tableName);
             }
         },
-        setFormPart: function (partObj, tableName) {
+        setFormPart: function (partObj, tableName) {    // TODO: Highlight part number in tree
             if (partForm.isFormChanged()) {
                 if (confirm("Changes have been made. Reset changes?"))
                     partForm.resetChanges();
@@ -25,16 +21,20 @@ var partsTreeComponent = {
                     return;
             }
             partForm.tableName = tableName;
-            partForm.part = partObj;
-            partForm.serverStatePart = jQuery.extend(true, { }, partObj);     // Deep Clone
+            partForm.serverStatePart = partObj;
+            partForm.part = jQuery.extend(true, { }, partObj);     // Deep Clone
             partForm.schema = partsTree.tables[tableName].schema;
+            if (partObj['Part Number'] == "Add new part..")
+                partForm.newPart = true;
+            else
+                partForm.newPart = false;
         }
     },
     template: `
-        <li v-bind:id="table" v-on:click="loadParts(table)">
+        <li v-bind:id="table" v-on:click="loadParts(table)" class="treeName">
             <a>{{ table }}</a>
-            <ul v-show="data.selected">
-                <li v-for="part in data.parts">
+            <ul v-show="data.selected" class="treeParent">
+                <li v-for="part in data.parts" class="partName">
                     <a v-on:click="setFormPart(part, table)">
                         {{ part['Part Number'] }}
                     </a>
@@ -63,6 +63,15 @@ $.getJSON(window.location.origin + "/tables", data => {
             },
             data: {
               tables: dbTables
+            },
+            methods: {
+                reloadTable: function (tableName) {
+                    $.getJSON(`${window.location.origin}/tables?name=${tableName}`, data => {
+                        this.tables[tableName].parts = data.parts;
+                        this.tables[tableName].schema = parseTableSchema(data.schema);
+                        this.tables[tableName].parts.unshift(buildEmptyPart(partsTree.tables[tableName].schema));
+                    });
+                }
             }
         });  
     } else {

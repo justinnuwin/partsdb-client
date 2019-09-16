@@ -87,7 +87,7 @@ class Database {
 
     updatePart(tableName, originalPartNumber, part) {
         let setString = "";
-        // TODO: Add method to escape \' from all dynamic values
+        // TODO: Improve method to properly escape and sanatize parameters
         for (let property in part) {
             let dirtyProperty = part[property];
             let cleanProperty;
@@ -101,6 +101,29 @@ class Database {
         return this.enqueue(`UPDATE ${this.credentials.database}.${tableName}
                              SET ${setString}
                              WHERE \`Part Number\`='${originalPartNumber}'`,
+                            result => {return result});
+    }
+
+    insertPart(tableName, part) {
+        let columnString = "(";
+        let valueString = "(";
+        // TODO: Improve method to properly escape and sanatize parameters
+        for (let property in part) {
+            let dirtyProperty = part[property];
+            let cleanProperty;
+            if (dirtyProperty.indexOf("'") > -1)
+                cleanProperty = dirtyProperty.replace("\'", "\'\'");
+            else
+                cleanProperty = dirtyProperty;
+            columnString += `\`${property}\`,`;
+            valueString += `'${cleanProperty}',`;
+        }
+        columnString = columnString.slice(0, -1);
+        columnString += ')'
+        valueString = valueString.slice(0, -1);
+        valueString += ')'
+        return this.enqueue(`INSERT INTO ${this.credentials.database}.${tableName} ${columnString}
+                             VALUES ${valueString}`,
                             result => {return result});
     }
 }

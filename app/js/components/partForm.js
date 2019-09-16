@@ -28,25 +28,7 @@ var partFormComponent = {
             }
             if (formValid) {
                 $("#partForm > form").append("<p id='submitMessage'>Submitting. This may take a moment...</p>");
-                $.ajax({
-                    url: "/parts",
-                    type: "post",
-                    data: {
-                        "tableName": partForm.tableName,
-                        "originalPartNumber": partForm.serverStatePart["Part Number"],
-                        "part": partForm.part
-                    },
-                    success: function (message) {
-                        $("#submitMessage").remove();
-                        $("#partForm > form").append(`<p id='submitMessage'>${message}</p>`);
-                        partForm.serverStatePart = $.extend(true, { }, partForm.part);
-                        $("label").css("font-weight", "normal");
-                    },
-                    error: function (xhr, status, message) {
-                        $("#submitMessage").remove();
-                        $("#partForm > form").append(`<p id='submitMessage'>ajax error in validateForm: ${status}: ${message}</p>`);
-                    } 
-                });
+                partForm.submit();
             }
         },
         formChangedHandler: function (property) {
@@ -104,20 +86,44 @@ var partForm = new Vue({
         part: {},
         serverStatePart: {},
         schema: {},
-        errors: []
+        errors: [],
+        newPart: false
     },
     methods: {
         isFormChanged: function () {
-            for (key in partForm.part) {
-                if (partForm.part[key] != partForm.serverStatePart[key])
+            for (key in this.part) {
+                if (this.part[key] != this.serverStatePart[key])
                     return true;
             }
             return false;
         }, 
         resetChanges: function () {
-            for (property in partForm.part) {
-                partForm.part[property] = partForm.serverStatePart[property];
+            for (property in this.part) {
+                this.part[property] = this.serverStatePart[property];
             }
+        },
+        submit: function () {
+            $.ajax({
+                url: "/parts",
+                type: "post",
+                data: {
+                    "tableName": this.tableName,
+                    "originalPartNumber": this.serverStatePart["Part Number"],
+                    "part": this.part,
+                    "newPart": this.newPart
+                },
+                success: (message) => {
+                    this.serverStatePart = $.extend(true, { }, this.part);
+                    $("#submitMessage").remove();
+                    $("#partForm > form").append(`<p id='submitMessage'>${message}</p>`);
+                    $("label").css("font-weight", "normal");
+                    partsTree.reloadTable(this.tableName);
+                },
+                error: function (xhr, status, message) {
+                    $("#submitMessage").remove();
+                    $("#partForm > form").append(`<p id='submitMessage'>ajax error in validateForm: ${status}: ${message}</p>`);
+                } 
+            });
         }
     }
 });

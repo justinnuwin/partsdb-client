@@ -19,6 +19,18 @@ a:hover {
     overflow: scroll;
 }
 
+.treeName {
+    font-size: large;
+}
+
+.treeParent li:first-child {
+    font-weight: bold;
+}
+
+.treeName .partName {
+    font-size: medium;
+}
+
 #partForm {
     width: 66vw;
     box-sizing: border-box;
