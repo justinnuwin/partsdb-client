@@ -13,7 +13,9 @@ var partsTreeComponent = {
                 partsTree.reloadTable(tableName);
             }
         },
-        setFormPart: function (partObj, tableName) {    // TODO: Highlight part number in tree
+        setFormPart: function (partObj, tableName) {
+            $('.partName a').css('color', '');
+            $(`[id='${partObj['Part Number']}'] a`).css('color', 'magenta');
             if (partForm.isFormChanged()) {
                 if (confirm("Changes have been made. Reset changes?"))
                     partForm.resetChanges();
@@ -34,7 +36,7 @@ var partsTreeComponent = {
         <li v-bind:id="table" v-on:click="loadParts(table)" class="treeName">
             <a>{{ table }}</a>
             <ul v-show="data.selected" class="treeParent">
-                <li v-for="part in data.parts" class="partName">
+                <li v-for="part in data.parts" v-bind:id="part['Part Number']" class="partName">
                     <a v-on:click="setFormPart(part, table)">
                         {{ part['Part Number'] }}
                     </a>
@@ -70,6 +72,12 @@ $.getJSON(window.location.origin + "/tables", data => {
                         this.tables[tableName].parts = data.parts;
                         this.tables[tableName].schema = parseTableSchema(data.schema);
                         this.tables[tableName].parts.unshift(buildEmptyPart(partsTree.tables[tableName].schema));
+                        $('.partName a').css('color', '');
+                        $(`[id='${partForm.part['Part Number']}'] a`).css('color', 'magenta');
+                        setTimeout(function() {     // Try setting css again since it may take time for Vue.js to react to maodel change
+                            $(`[id='${partForm.part['Part Number']}'] a`).css('color', 'magenta')
+                        }, 1000);
+
                     });
                 }
             }
